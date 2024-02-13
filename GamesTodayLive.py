@@ -32,7 +32,7 @@ async def send_msg(msg):
 
 
 # %%
-sendMessage = []
+sendMessage = {}
 
 while True:
 
@@ -155,32 +155,41 @@ while True:
             if (
                 favorityHome
                 and (dtLive["homeScore"][indice] - dtLive["awayScore"][indice]) <= 0
-                and diffAttackPress > 10
+                and diffAttackPress >= 10
                 and totalCorners > 1
             ):
                 entryMsg = True
             if (
                 favorityAway
                 and (dtLive["awayScore"][indice] - dtLive["homeScore"][indice]) <= 0
-                and diffAttackPress > 10
+                and diffAttackPress >= 10
                 and totalCorners > 1
             ):
                 entryMsg = True
 
-            lastMessage = False    
+            lastMessage = False
 
-            for obj in sendMessage:
-                if obj.player == dtLive['home'][indice] and obj.time >= 0:
-                    obj.time = obj.time - 1
-                    lastMessage = True
-                elif obj.player == dtLive['home'][indice]:
-                    lastMessage = False
-                    sendMessage.remove(obj)
+            findMsg = 0
+            # Verifica se a chave existe no dicionário e se o campo 'time' não é None
+            if dtLive["home"][indice] in sendMessage and sendMessage[dtLive["home"][indice]].get("time") is not None:
+                findMsg = sendMessage[dtLive["home"][indice]]["time"]
+
+            # Se findMsg existe e é maior ou igual a zero
+            if findMsg is not None and findMsg > 0:
+                # Diminui o valor de 'time' em 1
+                sendMessage[dtLive["home"][indice]]["time"] -= 1
 
 
+            msg1 = f"Jogo => {dtLive['home'][indice]} {dtLive['homeScore'][indice]} X {dtLive['awayScore'][indice]} {dtLive['away'][indice]}"
+            msg1 += f"\nProbabilidade => {probalityHome}% X {probalityAway}%"
+            msg1 += f"\nPressão => {len(homeAttack)} X {len(awayAttack)}"
+            msg1 += f"\nEscanteios => {totalCorners}"
+            msg1 += f"\nTempo => {round(gameTime)} minutos"
+            msg1 += "\n=================================================="
+            print(msg1)
 
-            if entryMsg and (gameTime > 30 and gameTime < 45) and lastMessage == False:
-                sendMessage.append({"player": dtLive["home"][indice], "time": 3})
+            if entryMsg and (gameTime > 30 and gameTime < 45) :
+                # sendMessage[dtLive["home"][indice]] = {"time": 3}
                 msg = f"Jogo => {dtLive['home'][indice]} {dtLive['homeScore'][indice]} X {dtLive['awayScore'][indice]} {dtLive['away'][indice]}"
                 msg += f"\nProbabilidade => {probalityHome}% X {probalityAway}%"
                 msg += f"\nPressão => {len(homeAttack)} X {len(awayAttack)}"
@@ -194,8 +203,8 @@ while True:
                 # Substitua 'CHAT_ID' pelo ID do chat para o qual você deseja enviar a mensagem
                 await send_msg(msg)
                 print(msg)
-            if entryMsg and gameTime > 80 and lastMessage == False:
-                sendMessage.append({"player": dtLive["home"][indice], "time": 3})
+            if entryMsg and gameTime > 80 :
+                # sendMessage[dtLive["home"][indice]] = {"time": 3}
                 msg = f"Jogo => {dtLive['home'][indice]} {dtLive['homeScore'][indice]} X {dtLive['awayScore'][indice]} {dtLive['away'][indice]}"
                 msg += f"\nProbabilidade => {probalityHome}% X {probalityAway}%"
                 msg += f"\nPressão => {len(homeAttack)} X {len(awayAttack)}"
