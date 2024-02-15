@@ -156,14 +156,14 @@ while True:
                 favorityHome
                 and (dtLive["homeScore"][indice] - dtLive["awayScore"][indice]) <= 0
                 and diffAttackPress >= 10
-                and totalCorners > 1
+                and totalCorners > 2
             ):
                 entryMsg = True
             if (
                 favorityAway
                 and (dtLive["awayScore"][indice] - dtLive["homeScore"][indice]) <= 0
                 and diffAttackPress >= 10
-                and totalCorners > 1
+                and totalCorners > 2
             ):
                 entryMsg = True
 
@@ -203,7 +203,7 @@ while True:
                 # Substitua 'CHAT_ID' pelo ID do chat para o qual você deseja enviar a mensagem
                 await send_msg(msg)
                 print(msg)
-            if entryMsg and gameTime > 80 :
+            if entryMsg and gameTime > 80 and totalCorners > 6:
                 # sendMessage[dtLive["home"][indice]] = {"time": 3}
                 msg = f"Jogo => {dtLive['home'][indice]} {dtLive['homeScore'][indice]} X {dtLive['awayScore'][indice]} {dtLive['away'][indice]}"
                 msg += f"\nProbabilidade => {probalityHome}% X {probalityAway}%"
@@ -218,5 +218,10 @@ while True:
                 await send_msg(msg)
                 print(msg)
     time.sleep(60)
+
+# %%
+sportMonks = f"https://api.sportmonks.com/v3/core/countries/search/Denmark?api_token=V5bbdX6pMm7YVLeNAuenaXym3plDu0RmUWQUmEqYj7mGaEkFXuw227EfpsdS&include=leagues"
+requestSport = requests.get(sportMonks)
+
 
 # %%
